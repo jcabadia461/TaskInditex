@@ -8,8 +8,6 @@ import path from 'path';
 
 function moveUploadedImageToOutputDirectory(file: Express.Multer.File): string {
   try {
-    console.log(process.env.OUTPUT_IMAGES_DIR);
-    console.log('.........-.-.-.-.-.-.-.-.-.-.-.-.-.');
     const extension = path.extname(file.filename);
     const name = path.basename(file.filename, extension);
     createDirectory(join(process.env.OUTPUT_IMAGES_DIR as string, name));

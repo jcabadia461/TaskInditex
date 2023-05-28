@@ -26,7 +26,6 @@ async function handleGetTask(req: Request, res: Response, next: NextFunction): P
       throw new NotFound(`Task id ${taskId} not found`);
     }
     const response = await getTaskBLL(task);
-    console.log(response);
     validateOutputData(getTaskResponseSchema, response);
     res.status(200).json(response);
   } catch (error) {
