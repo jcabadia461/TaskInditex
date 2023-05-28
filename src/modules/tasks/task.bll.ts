@@ -23,7 +23,6 @@ async function createTaskBLL(req: Request, file: Express.Multer.File) {
   const pathFile = moveUploadedImageToOutputDirectory(file);
   const md5 = getMD5FromFileContent(pathFile);
   const widthAndHeight = await getWidthAndHeightFromImageFile(pathFile);
-
   const { originalname, size } = file;
   const newImage: Iimage = {
     originalname,
@@ -33,7 +32,6 @@ async function createTaskBLL(req: Request, file: Express.Multer.File) {
     width: widthAndHeight.width,
     height: widthAndHeight.height,
   };
-
   const imageRecord = await createImageDB(newImage);
   const taskRecord = await createTaskDB(imageRecord.id);
 
@@ -42,7 +40,6 @@ async function createTaskBLL(req: Request, file: Express.Multer.File) {
     image: getUrlFromImagePath(req, imageRecord.path),
     createdAt: taskRecord.createdAt,
   };
-
   processTask(originalname, imageRecord.id, taskRecord.id, pathFile);
 
   return result;
