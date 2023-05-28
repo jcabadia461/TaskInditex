@@ -8,6 +8,8 @@ import path from 'path';
 
 function moveUploadedImageToOutputDirectory(file: Express.Multer.File): string {
   try {
+    console.log(process.env.OUTPUT_IMAGES_DIR);
+    console.log('.........-.-.-.-.-.-.-.-.-.-.-.-.-.');
     const extension = path.extname(file.filename);
     const name = path.basename(file.filename, extension);
     createDirectory(join(process.env.OUTPUT_IMAGES_DIR as string, name));
@@ -40,7 +42,7 @@ function writeResizeImageToOutputDirectory(width: number, originalName: string, 
 }
 
 function createDirectory(name) {
-  if (!fs.existsSync(name)) fs.mkdirSync(name);
+  if (!fs.existsSync(name)) fs.mkdirSync(name, { recursive: true });
 }
 
 function getMD5FromFileContent(file: string) {
