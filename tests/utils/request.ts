@@ -3,18 +3,6 @@ import app from '../../src/app';
 
 type Method = Uppercase<keyof SuperAgentTest> | keyof SuperAgentTest;
 
-/**
- * Returns a supertest instance.
- *
- * @example
- *
- * ```js
- * const response = await request({
- *   url: '/marketplaces/transactions',
- *   method: 'get',
- * }).send();
- * ```
- */
 export default ({
   method,
   url,
