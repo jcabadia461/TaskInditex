@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="6" failures="0" errors="0" time="2.483">
+  <testsuite name="POST /task" errors="0" failures="0" skipped="0" timestamp="2023-05-28T21:16:51" time="2.36" tests="6">
+    <testcase classname="POST /task Should return an error, Expected a file but got nothing" name="POST /task Should return an error, Expected a file but got nothing" time="0.069">
+    </testcase>
+    <testcase classname="POST /task upload image and create task" name="POST /task upload image and create task" time="0.518">
+    </testcase>
+    <testcase classname="POST /task Should return an error, upload a non image file" name="POST /task Should return an error, upload a non image file" time="0.268">
+    </testcase>
+    <testcase classname="GET /task/:idTask get task detail by idTask" name="GET /task/:idTask get task detail by idTask" time="0.083">
+    </testcase>
+    <testcase classname="GET /task/:idTask should return an error, idTask not have a valid format" name="GET /task/:idTask should return an error, idTask not have a valid format" time="0.031">
+    </testcase>
+    <testcase classname="GET /task/:idTask should return an error, idTask not found" name="GET /task/:idTask should return an error, idTask not found" time="0.039">
+    </testcase>
+  </testsuite>
+</testsuites>
