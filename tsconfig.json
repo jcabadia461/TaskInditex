@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "pretty": true,
+    "removeComments": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2018",
+
+    "baseUrl": ".",
+    "outDir": "dist",
+    "rootDir": ".",
+    "paths": {
+      "*": ["node_modules/*"]
+    },
+    "noImplicitAny": false,
+    "lib": ["ES2018", "dom"]
+  },
+  "include": ["src"],
+  "exclude": [
+    "src/**/*.test.ts",
+    "output/**/*"
+  ]
+}

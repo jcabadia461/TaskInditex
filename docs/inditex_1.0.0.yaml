@@ -1,0 +1,386 @@
+openapi: 3.0.2
+info:
+  title: Inditex API
+  version: 1.0.0
+  contact:
+    name: Juan Carlos Abadía
+    email: abadiajuancarlos@gmail.com
+  description: "This API is for the technical test"
+servers:
+  - url: 'http://localhost:3001/'
+    variables:
+      host:
+        description: The environment where the API is hosted.
+        enum:
+          - localhost:3001
+        default: localhost:3001
+paths:
+  /task:
+    post:
+      operationId: post-taks
+      summary: "Creates a taks."
+      description: "Creates a task."
+      requestBody:
+        $ref: '#/components/requestBodies/PostTask'
+      responses:
+        '201':
+          $ref: '#/components/responses/TaskResponse'
+        '400':
+          $ref: '#/components/responses/error400'
+        '401':
+          $ref: '#/components/responses/error401'
+        '404':
+          $ref: '#/components/responses/error404'
+        '500':
+          $ref: '#/components/responses/error500'
+        default:
+          $ref: '#/components/responses/errorResponse'
+      tags:
+        - Tasks
+  /task/{task_id}:
+    get:
+      description: "Retrieves the details of a specific Task.\n\nTo send this request, you must provide a task ID in the request path."
+      summary: "Retrieves the details of a task."
+      operationId: get-task
+      parameters:
+        - $ref: '#/components/parameters/path-Task-Id'
+      responses:
+        '200':
+          $ref: '#/components/responses/TaskInfoResponse'
+        '204':
+          $ref: '#/components/responses/Response204'
+        '400':
+          $ref: '#/components/responses/error400'
+        '401':
+          $ref: '#/components/responses/error401'
+        '404':
+          $ref: '#/components/responses/error404'
+        '500':
+          $ref: '#/components/responses/error500'
+        default:
+          $ref: '#/components/responses/errorResponse'
+      tags:
+        - Tasks
+components:
+  parameters:
+    path-Task-Id:
+      schema:
+        $ref: '#/components/schemas/Uuid'
+      name: task_id
+      in: path
+      required: true
+      description: "Task ID to be used in the query"
+  requestBodies:
+    PostTask:
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              fieldName:
+                type: string
+                format: binary
+                pattern: '^[A-Za-z0-9,.:\''\"\s-\/\{\}\$\^\[\]_\(\)+\*\|\\]*$'
+                maxLength: 8192
+          examples:
+            PostTaskFileRequestBody:
+              value:
+                  fieldName: string
+
+  schemas:
+    Task:
+      description: "Data structure containing Task"
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          allOf:
+            - $ref: '#/components/schemas/Uuid'
+          description: "Unique ID generated"
+        image:
+          allOf:
+            - $ref: '#/components/schemas/Url'
+          description: "image url"
+          example: http://localhost:3001/image.jpg
+        createdAt:
+          allOf:
+            - $ref: '#/components/schemas/CreatedDateISO'
+          description: "Date and time when the student was created.\n\nThe value uses the data format defined in ISO 8601 and is expressed in UTC time:\n\n'YYYY-MM-DDThh:mm:ss.sssZ'"
+      required:
+        - id
+        - firstName
+        - createdAt
+    TaskDetails:
+      description: "Data structure containing Task details"
+      type: object
+      additionalProperties: false
+      properties:
+        task:
+          type: object
+          description: "Task object"
+        originalImage:
+          type: object
+          description: "Original image object"
+        resizedImages:
+          type: object
+          description: "Resized images object"
+      required:
+        - task
+        - originalImage
+        - resizedImages
+    Url:
+      description: "Url"
+      type: string
+      maxLength: 1000
+      example: http://localhost:3001/image.jpg
+    TimeISOString:
+      description: "Date and time in the complete data format defined in ISO 8601:\n\n'YYYY-MM-DDThh:mm:ss.sssTZD'\n\nWhere:\n- YYYY: 4-digit year\n- MM: 2-digit month (for example, 01 = January)\n- DD: 2-digit day of the month (01 through 31)\n- hh: 2-digit hour of the day (00 through 23)\n- mm: 2-digit minute of the hour (00 through 59)\n- ss.sss: 5-digit seconds and milliseconds, separated by a point\n- TZD: Time zone indicator"
+      type: string
+      format: date-time
+      maxLength: 24
+      pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z'
+      example: '2022-03-17T10:02:03.482Z'
+    CreatedDateISO:
+      allOf:
+        - $ref: '#/components/schemas/TimeISOString'
+      description: "Date and time when the entry was created"
+    Uuid:
+      description: "Universally unique ID"
+      type: string
+      format: uuid
+      maxLength: 36
+      pattern: ^[a-zA-Z0-9-]*$
+      example: d317d060-0d41-43ec-ba43-e47e8a25aa5b
+    ResponseError:
+      description: "Data structure containing the details for errors"
+      type: object
+      additionalProperties: false
+      properties:
+        errors:
+          type: array
+          description: "Array of errors"
+          items:
+            type: object
+            description: "Data structure containing the error details"
+            additionalProperties: false
+            properties:
+              code:
+                type: string
+                description: "Unique alphanumeric human readable error code"
+                maxLength: 255
+                minLength: 0
+                pattern: '^[a-zA-Z0-9 _]*$'
+              message:
+                type: string
+                description: "Brief summary of the reported issue"
+                maxLength: 255
+                minLength: 0
+                pattern: '^[a-zA-Z0-9 _]*$'
+              level:
+                type: string
+                description: "Level of the reported issue.\n\nThe possible values are:\n- info\n- warning\n- error"
+                maxLength: 255
+                minLength: 0
+                pattern: '^[a-zA-Z0-9 _]*$'
+              description:
+                type: string
+                description: "Detailed description of the reported issue"
+                maxLength: 255
+                minLength: 0
+                pattern: '^[a-zA-Z0-9 _]*$'
+            required:
+              - code
+              - message
+              - level
+              - description
+          maxItems: 255
+          minItems: 1
+          uniqueItems: true
+      required:
+        - errors
+      title: ResponseError
+      x-examples:
+        '401':
+          $ref: '#/components/examples/Error401Example'
+        '404':
+          $ref: '#/components/examples/Error404Example'
+        '500':
+          $ref: '#/components/examples/Error500Example'
+  responses:
+    TaskResponse:
+      description: "Response for a POST request, '201 Created'"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Task'
+          examples:
+            TaskResponse:
+              $ref: '#/components/examples/NewTaskResponseSample'
+    TaskInfoResponse:
+      description: "Response for a GET request, '200'"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TaskDetails'
+          examples:
+            TaskResponse:
+              $ref: '#/components/examples/TaskDetailsResponseSample'
+    Response204:
+      description: "No content"
+    error400:
+      description: "Bad request"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseError'
+          examples:
+            example-1:
+              $ref: '#/components/examples/Error400Example'
+    error401:
+      description: "Unauthorized"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseError'
+          examples:
+            example-1:
+              $ref: '#/components/examples/Error401Example'
+    error404:
+      description: "Not found"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseError'
+          examples:
+            example-1:
+              $ref: '#/components/examples/Error404Example'
+    error500:
+      description: "Internal server error"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseError'
+          examples:
+            example-1:
+              $ref: '#/components/examples/Error500Example'
+    errorResponse:
+      description: Default error
+      content:
+        application/json:
+          schema:
+            description: "Data structure containing the details for errors"
+            type: object
+            additionalProperties: false
+            properties:
+              errors:
+                type: array
+                description: "Array of errors"
+                items:
+                  type: object
+                  description: "Data structure containing the error details"
+                  additionalProperties: false
+                  properties:
+                    code:
+                      type: string
+                      description: "Unique alphanumeric human readable error code"
+                      maxLength: 255
+                      minLength: 0
+                      pattern: '^[a-zA-Z0-9 _]*$'
+                    message:
+                      type: string
+                      description: "Brief summary of the reported issue"
+                      maxLength: 255
+                      minLength: 0
+                      pattern: '^[a-zA-Z0-9 _]*$'
+                    level:
+                      type: string
+                      description: "Level of the reported issue.\n\nThe possible values are:\n- info\n- warning\n- error"
+                      maxLength: 255
+                      minLength: 0
+                      pattern: '^[a-zA-Z0-9 _]*$'
+                    description:
+                      type: string
+                      description: "Detailed description of the reported issue"
+                      maxLength: 255
+                      minLength: 0
+                      pattern: '^[a-zA-Z0-9 _]*$'
+                  required:
+                    - code
+                    - message
+                    - level
+                    - description
+                maxItems: 255
+                minItems: 1
+                uniqueItems: true
+            required:
+              - errors
+            x-examples:
+              example-1:
+                $ref: '#/components/examples/Error404Example'
+          examples:
+            example-1:
+              value:
+                errors:
+                  - code: string
+                    message: string
+                    level: FATAL
+                    description: string
+  examples:
+    NewTaskResponseSample:
+      value:
+        id: 99208e53-aad9-4cd6-a94f-ae93c9154c7f
+        image: http://localhost:3001/imagen.jpg
+        createdAt: 2022-12-28T15:02:36.468Z 
+    TaskDetailsResponseSample:
+      value:
+        task:
+          id: 'ba9ac380-2e59-41bf-a5f9-5866129ed43f'
+          idImage: 'b612dfea-75eb-494a-8040-e5ab2f168321'
+          createdAt: 2023-05-28T13:22:25.746Z
+          status: 'COMPLETED'
+          startProcessingAt: 2023-05-28T13:22:25.751Z
+          endProcessingAt: 2023-05-28T13:22:29.245Z
+          error: null
+        originalImage:
+          id: 'b612dfea-75eb-494a-8040-e5ab2f168321'
+          origin_image_id: null
+          original_name: 'hyundai-motor-group-r90ZgffimHk-unsplash.jpg'
+          md5: 'b789be4a89415783fb47f008dd4b9f12'
+          path: 'output/hyundai-motor-group-r90ZgffimHk-unsplash/hyundai-motor-group-r90ZgffimHk-unsplash.jpg'
+          width: '15520'
+          height: '7760'
+          size: '5054307'
+          created_at: 2023-05-28T13:22:25.740Z
+        resizedImages:
+          array: resizedImages object
+    Error400Example:
+      value:
+        errors:
+          - code: '400'
+            message: Bad Request
+            level: FATAL
+            description: Description of the Bad Request error
+    Error401Example:
+      value:
+        errors:
+          - code: '401'
+            message: Unauthorized
+            level: FATAL
+            description: Description of the Unauthorized error
+    Error404Example:
+      value:
+        errors:
+          - code: '404'
+            message: Not Found
+            level: FATAL
+            description: Description of the Not Found error
+    Error500Example:
+      value:
+        errors:
+          - code: '500'
+            message: Internal Server Error
+            level: FATAL
+            description: Description of the Internal Server Error error
+tags:
+  - name: Tasks

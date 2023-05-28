@@ -1,0 +1,38 @@
+version: '2'
+services:
+  app:
+    build: .
+    container_name: nodejs_app
+    working_dir: /app
+    volumes:
+      - ./src:/app/src
+    ports:
+      - 3001:5000
+    depends_on:
+      - postgres
+    networks:
+      - dev-net
+    environment:
+      - NODE_ENV=docker
+      - PORT=5000
+    # command: sh -c "npm start"
+    command: sh -c "npm run start:dev"
+  postgres:
+    image: postgres:latest
+    container_name: postgresql_inditex
+    restart: always
+    environment:
+      - POSTGRES_DB=inditex
+      - POSTGRES_USER=inditex
+      - POSTGRES_PASSWORD=inditex
+    ports:
+      - 5433:5432
+    volumes:
+      # - ./postgres_data:/var/lib/postgresql/data
+      - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    networks:
+      - dev-net
+networks:
+  dev-net:
+    driver: bridge
+

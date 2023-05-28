@@ -1,0 +1,14 @@
+# Ignore artifacts:
+dist/*
+build
+coverage
+docs
+infrastructure
+node_modules
+db/*
+pipeline
+.github/workflows/*
+.vscode/*
+docker-compose.yml
+nodemon.json
+README.md
