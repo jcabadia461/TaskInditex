@@ -17,5 +17,12 @@ In the Swagger, you can find the specifications for the 2 published endpoints of
 
 The database (PostgreSQL) and the backend (Node.js) are deployed in Docker containers.
 
+### Endpoints published
+* GET http://localhost:3001/docs
+* POST http://localhost:3001/task
+* GET http://localhost:3001/task/:taskId
 
+### Uploaded images
+>All the uploaded images are stored in the /output folder.
 
+>The /output folder is located inside the Docker container.
